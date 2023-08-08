@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import MoviesList from "./components/MoviesList";
 import "./App.css";
@@ -9,40 +9,45 @@ function App() {
   const [error, setError] = useState(null);
   const [dataFetch, setDataFetch] = useState(false);
 
-  async function fetchMoviesHandler() {
+  const fetchMoviesHandler = useCallback(async () => {
     setIsloading(true);
     setError(null);
-    try {
-      setDataFetch(true);
-      let response = await fetch("https://swapi.py4e.com/api/film/");
-      if (!response.ok) {
-        const myInterval = setInterval(async () => {
-          response = await fetch("https://swapi.py4e.com/api/films/");
-          if (response.ok) {
-            setDataFetch(false);
-            clearInterval(myInterval);
-            return;
-          }
-        }, 5000);
-        throw new Error("Something went Wrong ...Retrying!!!");
+    var myInterval = setInterval(tryToGetData, 5000);
+
+    async function tryToGetData() {
+      try {
+        setDataFetch(true);
+        let response = await fetch("https://swapi.py4e.com/api/films/");
+        if (!response.ok) {
+          throw new Error("Something went Wrong ...Retrying!!!");
+        }
+        const data = await response.json();
+  
+        const transformedMovies = data.results.map((movieData) => {
+          return {
+            id: movieData.episode_id,
+            title: movieData.title,
+            openingText: movieData.opening_crawl,
+            releaseDate: movieData.release_date,
+          };
+        });
+        setMovies(transformedMovies);
+        clearInterval(myInterval);
+      } catch (error) {
+        setError(error.message);
       }
-
-      const data = await response.json();
-
-      const transformedMovies = data.results.map((movieData) => {
-        return {
-          id: movieData.episode_id,
-          title: movieData.title,
-          openingText: movieData.opening_crawl,
-          releaseDate: movieData.release_date,
-        };
-      });
-      setMovies(transformedMovies);
-    } catch (error) {
-      setError(error.message);
-    }
+    };
     setIsloading(false);
-  }
+  }, []);
+
+  useEffect(() => {
+    fetchMoviesHandler();
+  }, [fetchMoviesHandler]);
+
+  const dataFetchHandler = (event) => {
+    event.preventDefault();
+    setDataFetch(false);
+  };
 
   let content = <p>Found no movies.</p>;
 
@@ -54,7 +59,7 @@ function App() {
     content = (
       <section>
         <p>{error}</p>
-        <button>Cancel</button>
+        <button onClick={dataFetchHandler}>Cancel</button>
       </section>
     );
   }
@@ -62,7 +67,6 @@ function App() {
   if (isLoading) {
     content = <p>Loading..</p>;
   }
-  console.log(movies);
   return (
     <React.Fragment>
       <section>
