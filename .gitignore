@@ -1,4 +1,4 @@
-node_modules/.package-lock.json
+ node_modules/.package-lock.json
 node_modules/.bin/acorn
 node_modules/.bin/acorn.cmd
 node_modules/.bin/acorn.ps1
@@ -38224,3 +38224,4 @@ node_modules/.cache/babel-loader/c2239f0ffd01772aec0b7c43be8a2161e2a6b6770b9aacb
 node_modules/.cache/babel-loader/d9d12dd65d758eae85fb17303ee5f1f5efcce7e5a12ce1381eb9071406db3be1.json
 node_modules/.cache/babel-loader/e04f743ef1ba4e41be0027ef2395138aa1d33e7562ebbe8f45cf76ebf1b47a1b.json
 node_modules/.cache/babel-loader/e849fc4bd49d93074a68d4b6c5263c78069b3b43b1a9aa8d195e5f88111a6a69.json
+node_modules/.package-lock.json
