@@ -2,15 +2,15 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import MoviesList from "./components/MoviesList";
 import "./App.css";
+import AddMovie from "./components/AddMovie";
 
 function App() {
   const [movies, setMovies] = useState([]);
-  const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsloading] = useState(true);
   const [error, setError] = useState(null);
   const [dataFetch, setDataFetch] = useState(false);
 
   const fetchMoviesHandler = useCallback(async () => {
-    setIsloading(true);
     setError(null);
     var myInterval = setInterval(tryToGetData, 5000);
 
@@ -33,16 +33,20 @@ function App() {
         });
         setMovies(transformedMovies);
         clearInterval(myInterval);
+        setIsloading(false);
       } catch (error) {
         setError(error.message);
       }
     };
-    setIsloading(false);
   }, []);
 
   useEffect(() => {
     fetchMoviesHandler();
   }, [fetchMoviesHandler]);
+
+  function addMovieHandler(movie) {
+    console.log(movie);
+  }
 
   const dataFetchHandler = (event) => {
     event.preventDefault();
@@ -69,6 +73,9 @@ function App() {
   }
   return (
     <React.Fragment>
+      <section>
+        <AddMovie onAddMovie={addMovieHandler} />
+      </section>
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
